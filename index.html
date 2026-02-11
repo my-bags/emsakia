@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إمساكية رمضان 1447 - هيئة المساحة المصرية</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;500;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gold: #c5a059;
+            --islamic-green: #1b4332;
+            --soft-bg: #fdfaf5;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--soft-bg);
+            transition: all 0.4s ease;
+            overflow-x: hidden;
+        }
+
+        body.dark-mode {
+            background-color: #0b0f19;
+            color: #e2e8f0;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(197, 160, 89, 0.2);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+        }
+
+        .dark-mode .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            border-color: rgba(197, 160, 89, 0.1);
+        }
+
+        .gold-grad {
+            background: linear-gradient(135deg, #c5a059 0%, #8e6d2f 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Analog Clock Style */
+        .clock-face {
+            width: 150px;
+            height: 150px;
+            border: 6px solid var(--primary-gold);
+            border-radius: 50%;
+            position: relative;
+            margin: auto;
+            background: white;
+        }
+        .dark-mode .clock-face { background: #1e293b; }
+
+        .hand {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom;
+            background: var(--primary-gold);
+            border-radius: 4px;
+            transition: transform 0.5s cubic-bezier(0.4, 2.08, 0.55, 0.44);
+        }
+        .hour-hand { width: 5px; height: 35px; z-index: 3; }
+        .min-hand { width: 3px; height: 50px; z-index: 2; }
+        .sec-hand { width: 2px; height: 60px; background: #e63946; z-index: 1; }
+
+        /* Counter Display */
+        .digit-screen {
+            font-family: 'Courier New', Courier, monospace;
+            background: #1a1a1a;
+            color: #ffd700;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-size: 2.5rem;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            min-width: 120px;
+            display: inline-block;
+            border: 3px solid #333;
+        }
+
+        .active-row {
+            background-color: rgba(197, 160, 89, 0.15) !important;
+            border-right: 6px solid var(--primary-gold);
+        }
+
+        .scroll-v::-webkit-scrollbar { width: 6px; }
+        .scroll-v::-webkit-scrollbar-thumb { background: var(--primary-gold); border-radius: 10px; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-7xl mx-auto">
+        <!-- Top Bar -->
+        <header class="flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
+            <div class="text-center md:text-right">
+                <h1 class="text-4xl md:text-5xl font-black gold-grad mb-2">إمساكية رمضان 1447</h1>
+                <div class="flex items-center justify-center md:justify-start gap-3">
+                    <span class="text-gray-500 dark:text-gray-400 font-medium">حسابات هيئة المساحة المصرية - الفيوم</span>
+                    <div id="countdown-badge" class="px-3 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full font-bold"></div>
+                </div>
+            </div>
+
+            <div class="flex gap-4">
+                <button onclick="toggleFullscreen()" title="ملء الشاشة" class="glass-card p-4 hover:scale-110 transition active:scale-95">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-yellow-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                    </svg>
+                </button>
+                <button onclick="toggleTheme()" title="تغيير الإضاءة" class="glass-card p-4 hover:scale-110 transition active:scale-95">
+                    <svg id="theme-icon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-yellow-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Left: Current Info -->
+            <div class="lg:col-span-3 space-y-8">
+                <!-- Clock Card -->
+                <div class="glass-card p-8 text-center">
+                    <div class="clock-face mb-6">
+                        <div class="hand hour-hand" id="hr"></div>
+                        <div class="hand min-hand" id="mn"></div>
+                        <div class="hand sec-hand" id="sc"></div>
+                        <div class="absolute top-1/2 left-1/2 w-3 h-3 bg-yellow-700 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+                    </div>
+                    <div id="digital-clock" class="text-3xl font-black gold-grad tracking-tighter mb-1">00:00:00</div>
+                    <div id="full-date" class="text-sm text-gray-400 font-medium">جاري التحميل...</div>
+                </div>
+
+                <!-- Prayer Times Card -->
+                <div class="glass-card p-6">
+                    <h3 class="text-center font-bold text-lg mb-6 border-b border-gold-200 pb-2">مواقيت اليوم الفعلي</h3>
+                    <div id="prayer-list" class="space-y-4">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center: Spirit & Counter -->
+            <div class="lg:col-span-4 space-y-8">
+                <!-- Dua Card -->
+                <div class="glass-card p-8 relative overflow-hidden text-center min-h-[200px] flex flex-col justify-center">
+                    <div class="absolute -top-4 -right-4 opacity-10">
+                        <svg class="w-32 h-32" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L9.1 8.3 2 9.1l5.4 4.7L5.8 21l6.2-3.7 6.2 3.7-1.6-7.2L22 9.1l-7.1-.8L12 2z"/></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-yellow-700 mb-4" id="dua-day-title">دعاء الإفطار</h3>
+                    <p id="dua-content" class="text-xl font-serif italic leading-relaxed text-gray-700 dark:text-gray-300">
+                        "اللهم لك صمت وعلى رزقك أفطرت، ذهب الظمأ وابتلت العروق وثبت الأجر إن شاء الله."
+                    </p>
+                </div>
+
+                <!-- Tasbih Counter -->
+                <div class="glass-card p-8 text-center">
+                    <h3 class="text-xl font-bold text-yellow-700 mb-6">مسبحة الذكر الرقمية</h3>
+                    <div class="digit-screen mb-8" id="tasbih-val">00</div>
+                    <div class="flex flex-col items-center">
+                        <button onclick="incrementTasbih()" class="w-28 h-28 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-700 text-white text-5xl font-bold shadow-xl hover:scale-105 active:scale-90 transition border-8 border-white dark:border-slate-700">
+                            +
+                        </button>
+                        <button onclick="resetTasbih()" class="mt-6 text-gray-400 hover:text-red-500 text-sm transition underline underline-offset-4">إعادة تصفير العداد</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Full Table -->
+            <div class="lg:col-span-5">
+                <div class="glass-card h-full flex flex-col overflow-hidden">
+                    <div class="p-5 bg-gradient-to-r from-yellow-600 to-yellow-800 text-white text-center font-bold text-lg">جدول مواعيد أذان الفجر والإفطار (الفيوم)</div>
+                    <div class="table-container scroll-v flex-grow overflow-y-auto">
+                        <table class="w-full text-center">
+                            <thead class="bg-gray-50 dark:bg-slate-800 sticky top-0 z-10 shadow-sm text-xs">
+                                <tr>
+                                    <th class="p-4">رمضان</th>
+                                    <th class="p-4">ميلادي</th>
+                                    <th class="p-4">أذان الفجر</th>
+                                    <th class="p-4">أذان المغرب</th>
+                                </tr>
+                            </thead>
+                            <tbody id="imsakiye-rows">
+                                <!-- JS Injection -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // البيانات الدقيقة لمدينة الفيوم لعام 2026م (هيئة المساحة المصرية)
+        const ramadanData = [
+            { day: 1, date: "2026-02-19", label: "19 فبراير", fajr: "05:04", dhuhr: "12:09", asr: "03:21", maghrib: "05:47", isha: "07:04" },
+            { day: 2, date: "2026-02-20", label: "20 فبراير", fajr: "05:03", dhuhr: "12:09", asr: "03:22", maghrib: "05:47", isha: "07:05" },
+            { day: 3, date: "2026-02-21", label: "21 فبراير", fajr: "05:02", dhuhr: "12:08", asr: "03:22", maghrib: "05:48", isha: "07:06" },
+            { day: 4, date: "2026-02-22", label: "22 فبراير", fajr: "05:02", dhuhr: "12:08", asr: "03:22", maghrib: "05:49", isha: "07:06" },
+            { day: 5, date: "2026-02-23", label: "23 فبراير", fajr: "05:01", dhuhr: "12:08", asr: "03:23", maghrib: "05:50", isha: "07:07" },
+            { day: 6, date: "2026-02-24", label: "24 فبراير", fajr: "05:00", dhuhr: "12:08", asr: "03:23", maghrib: "05:51", isha: "07:08" },
+            { day: 7, date: "2026-02-25", label: "25 فبراير", fajr: "04:59", dhuhr: "12:08", asr: "03:24", maghrib: "05:52", isha: "07:08" },
+            { day: 8, date: "2026-02-26", label: "26 فبراير", fajr: "04:58", dhuhr: "12:08", asr: "03:25", maghrib: "05:52", isha: "07:09" },
+            { day: 9, date: "2026-02-27", label: "27 فبراير", fajr: "04:57", dhuhr: "12:08", asr: "03:25", maghrib: "05:53", isha: "07:10" },
+            { day: 10, date: "2026-02-28", label: "28 فبراير", fajr: "04:56", dhuhr: "12:07", asr: "03:25", maghrib: "05:54", isha: "07:10" },
+            { day: 11, date: "2026-03-01", label: "1 مارس", fajr: "04:55", dhuhr: "12:07", asr: "03:26", maghrib: "05:55", isha: "07:11" },
+            { day: 12, date: "2026-03-02", label: "2 مارس", fajr: "04:54", dhuhr: "12:07", asr: "03:26", maghrib: "05:55", isha: "07:12" },
+            { day: 13, date: "2026-03-03", label: "3 مارس", fajr: "04:52", dhuhr: "12:07", asr: "03:26", maghrib: "05:55", isha: "07:12" },
+            { day: 14, date: "2026-03-04", label: "4 مارس", fajr: "04:51", dhuhr: "12:07", asr: "03:26", maghrib: "05:56", isha: "07:13" },
+            { day: 15, date: "2026-03-05", label: "5 مارس", fajr: "04:50", dhuhr: "12:06", asr: "03:27", maghrib: "05:57", isha: "07:14" },
+            { day: 16, date: "2026-03-06", label: "6 مارس", fajr: "04:49", dhuhr: "12:06", asr: "03:27", maghrib: "05:57", isha: "07:14" },
+            { day: 17, date: "2026-03-07", label: "7 مارس", fajr: "04:48", dhuhr: "12:06", asr: "03:27", maghrib: "05:58", isha: "07:15" },
+            { day: 18, date: "2026-03-08", label: "8 مارس", fajr: "04:47", dhuhr: "12:06", asr: "03:27", maghrib: "05:59", isha: "07:16" },
+            { day: 19, date: "2026-03-09", label: "9 مارس", fajr: "04:46", dhuhr: "12:05", asr: "03:28", maghrib: "05:59", isha: "07:16" },
+            { day: 20, date: "2026-03-10", label: "10 مارس", fajr: "04:45", dhuhr: "12:05", asr: "03:28", maghrib: "06:00", isha: "07:17" },
+            { day: 21, date: "2026-03-11", label: "11 مارس", fajr: "04:43", dhuhr: "12:05", asr: "03:28", maghrib: "06:01", isha: "07:18" },
+            { day: 22, date: "2026-03-12", label: "12 مارس", fajr: "04:42", dhuhr: "12:05", asr: "03:28", maghrib: "06:01", isha: "07:18" },
+            { day: 23, date: "2026-03-13", label: "13 مارس", fajr: "04:41", dhuhr: "12:05", asr: "03:29", maghrib: "06:01", isha: "07:19" },
+            { day: 24, date: "2026-03-14", label: "14 مارس", fajr: "04:40", dhuhr: "12:04", asr: "03:29", maghrib: "06:02", isha: "07:20" },
+            { day: 25, date: "2026-03-15", label: "15 مارس", fajr: "04:38", dhuhr: "12:04", asr: "03:29", maghrib: "06:03", isha: "07:20" },
+            { day: 26, date: "2026-03-16", label: "16 مارس", fajr: "04:37", dhuhr: "12:04", asr: "03:29", maghrib: "06:04", isha: "07:21" },
+            { day: 27, date: "2026-03-17", label: "17 مارس", fajr: "04:36", dhuhr: "12:03", asr: "03:29", maghrib: "06:04", isha: "07:22" },
+            { day: 28, date: "2026-03-18", label: "18 مارس", fajr: "04:35", dhuhr: "12:03", asr: "03:29", maghrib: "06:05", isha: "07:22" },
+            { day: 29, date: "2026-03-19", label: "19 مارس", fajr: "04:33", dhuhr: "12:03", asr: "03:30", maghrib: "06:06", isha: "07:23" },
+            { day: 30, date: "2026-03-20", label: "20 مارس", fajr: "04:31", dhuhr: "12:02", asr: "03:30", maghrib: "06:07", isha: "07:24" }
+        ];
+
+        const duas = [
+            "اللهم لك صمت وعلى رزقك أفطرت، ذهب الظمأ وابتلت العروق وثبت الأجر إن شاء الله.",
+            "اللهم إني أسألك برحمتك التي وسعت كل شيء أن تغفر لي.",
+            "يا حي يا قيوم برحمتك أستغيث أصلح لي شأني كله ولا تكلني إلى نفسي طرفة عين.",
+            "اللهم إنك عفو كريم تحب العفو فاعف عني.",
+            "اللهم اجعل صيامنا فيه صيام الصائمين، وقيامنا فيه قيام القائمين.",
+            "اللهم تقبل منا صالح الأعمال واغفر لنا ولوالدينا وللمسلمين أجمعين."
+        ];
+
+        // --- Clock Logic ---
+        function updateClock() {
+            const now = new Date();
+            const s = now.getSeconds();
+            const m = now.getMinutes();
+            const h = now.getHours();
+
+            document.getElementById('sc').style.transform = `rotate(${s * 6}deg)`;
+            document.getElementById('mn').style.transform = `rotate(${m * 6 + s * 0.1}deg)`;
+            document.getElementById('hr').style.transform = `rotate(${h * 30 + m * 0.5}deg)`;
+
+            document.getElementById('digital-clock').innerText = now.toLocaleTimeString('ar-EG', { hour12: false });
+            document.getElementById('full-date').innerText = now.toLocaleDateString('ar-EG', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+        }
+        setInterval(updateClock, 1000);
+
+        // --- Tasbih Logic ---
+        let count = 0;
+        function incrementTasbih() {
+            count++;
+            document.getElementById('tasbih-val').innerText = count.toString().padStart(2, '0');
+            if (navigator.vibrate) navigator.vibrate(50);
+        }
+        function resetTasbih() {
+            count = 0;
+            document.getElementById('tasbih-val').innerText = '00';
+        }
+
+        // --- Theme & Screen ---
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const icon = document.getElementById('theme-icon');
+            if(document.body.classList.contains('dark-mode')) {
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />';
+            } else {
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />';
+            }
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                if (document.exitFullscreen) document.exitFullscreen();
+            }
+        }
+
+        // --- Imsakiye Core Logic ---
+        function initApp() {
+            const tableBody = document.getElementById('imsakiye-rows');
+            const now = new Date();
+            const todayStr = now.toISOString().split('T')[0];
+            const countdownBadge = document.getElementById('countdown-badge');
+
+            let activeIndex = -1;
+
+            ramadanData.forEach((day, index) => {
+                const tr = document.createElement('tr');
+                tr.id = `row-${index}`;
+                tr.className = "border-b border-gray-100 dark:border-slate-800 hover:bg-yellow-50 dark:hover:bg-slate-900 cursor-pointer transition";
+                
+                if (day.date === todayStr) {
+                    tr.className += " active-row";
+                    activeIndex = index;
+                }
+
+                tr.innerHTML = `
+                    <td class="p-4 font-bold text-yellow-700">${day.day}</td>
+                    <td class="p-4 text-xs text-gray-500">${day.label}</td>
+                    <td class="p-4">${day.fajr}</td>
+                    <td class="p-4 font-bold text-yellow-600">${day.maghrib}</td>
+                `;
+                tr.onclick = () => updateDayView(day);
+                tableBody.appendChild(tr);
+            });
+
+            // منطق العد التنازلي أو العرض الحالي
+            if (activeIndex !== -1) {
+                countdownBadge.innerText = `اليوم: ${ramadanData[activeIndex].day} رمضان`;
+                updateDayView(ramadanData[activeIndex]);
+                // التمرير لليوم الحالي
+                setTimeout(() => {
+                    document.getElementById(`row-${activeIndex}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 800);
+            } else {
+                const ramadanStart = new Date("2026-02-19");
+                const diffTime = ramadanStart - now;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                
+                if (diffDays > 0) {
+                    countdownBadge.innerText = `باقي ${diffDays} يوم على رمضان`;
+                } else {
+                    countdownBadge.innerText = "انقضى شهر رمضان، تقبل الله منكم";
+                }
+                updateDayView(ramadanData[0]); // عرض معاينة لليوم الأول
+            }
+        }
+
+        function updateDayView(dayData) {
+            document.getElementById('dua-day-title').innerText = `دعاء اليوم (${dayData.day} رمضان)`;
+            const list = document.getElementById('prayer-list');
+            const prayers = [
+                { n: 'أذان الفجر', v: dayData.fajr },
+                { n: 'الظهر', v: dayData.dhuhr },
+                { n: 'العصر', v: dayData.asr },
+                { n: 'أذان المغرب', v: dayData.maghrib },
+                { n: 'العشاء', v: dayData.isha }
+            ];
+
+            list.innerHTML = prayers.map(p => `
+                <div class="flex justify-between items-center p-3 rounded-xl bg-gray-50 dark:bg-slate-800 shadow-sm border-r-4 border-yellow-600">
+                    <span class="font-bold text-sm">${p.n}</span>
+                    <span class="font-mono text-lg gold-grad font-black">${p.v}</span>
+                </div>
+            `).join('');
+
+            // تحديث الدعاء بناءً على رقم اليوم
+            const duaText = duas[dayData.day % duas.length];
+            document.getElementById('dua-content').innerText = `"${duaText}"`;
+        }
+
+        window.onload = () => {
+            updateClock();
+            initApp();
+        };
+    </script>
+</body>
+</html>
